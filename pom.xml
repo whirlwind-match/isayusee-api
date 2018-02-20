@@ -73,6 +73,12 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
         <dependency>
+            <!-- For Hibernate with Java 9 as it's not there by default any more -->
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
