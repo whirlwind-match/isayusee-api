@@ -1,5 +1,6 @@
 package com.isayusee.api;
 
+import ch.qos.logback.classic.PatternLayout;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,6 +14,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 })
 public class Webapp extends AsyncConfigurerSupport {
 
+    static {
+        PatternLayout.defaultConverterMap.put(
+                "user", LogbackUserConverter.class.getName());
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(Webapp.class, args);
