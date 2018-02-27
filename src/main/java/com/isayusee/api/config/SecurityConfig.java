@@ -1,7 +1,7 @@
 package com.isayusee.api.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -43,6 +44,18 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AuthoritiesExtractor authoritiesExtractor() {
+        return map -> {
+            String nickname = (String) map.get("nickname");
+            if ("nealeu".equals(nickname)) {
+                return AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ACTUATOR ");
+            }
+            else {
+                return AuthorityUtils.createAuthorityList("ROLE_USER");
+            }
+        };
+    }
+    @Bean
     public FilterRegistrationBean corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
@@ -51,7 +64,7 @@ public class SecurityConfig {
         config.addAllowedMethod("*");
         UrlBasedCorsConfigurationSource configurationSource = new UrlBasedCorsConfigurationSource();
         configurationSource.registerCorsConfiguration("/api/**", config);
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(configurationSource));
+        FilterRegistrationBean bean = new FilterRegistrationBean<>(new CorsFilter(configurationSource));
         bean.setOrder(0);
         return bean;
     }
